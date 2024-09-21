@@ -1,5 +1,6 @@
 import fs from 'fs/promises';
 import { v4 as uuidv4 } from 'uuid';
+import filePath from "path";
 
 interface City {
   id: string;
@@ -7,10 +8,14 @@ interface City {
 }
 
 class HistoryService {
-  private filePath = './server/db/searchHistory.json';
+  ///server/db/searchHistory.json
+  // private filePath = path.resolve("server/db/searchHistory.json");
+  // private filePath = "./server/db/searchHistory.json";
+  private filePath =
+    "C:/Users/Moosorkh/Documents/GitHub/Module-9-Challenge/server/db/searchHistory.json";
 
   private async read(): Promise<City[]> {
-    const data = await fs.readFile(this.filePath, 'utf8');
+    const data = await fs.readFile(this.filePath, "utf8");
     return JSON.parse(data) as City[];
   }
 
@@ -34,7 +39,7 @@ class HistoryService {
   // * BONUS TODO: Define a removeCity method that removes a city from the searchHistory.json file
   async removeCity(id: string): Promise<void> {
     let cities = await this.read();
-    cities = cities.filter(city => city.id !== id);
+    cities = cities.filter((city) => city.id !== id);
     await this.write(cities);
   }
 }
