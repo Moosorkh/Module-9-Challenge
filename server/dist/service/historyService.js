@@ -1,5 +1,5 @@
-import fs from 'fs/promises';
-import { v4 as uuidv4 } from 'uuid';
+import fs from "fs/promises";
+import { v4 as uuidv4 } from "uuid";
 // TODO: Define a City class with name and id properties
 class City {
     constructor(name) {
@@ -11,7 +11,24 @@ class HistoryService {
     constructor() {
         this.filePath = "db/searchHistory.json";
     }
+    // TODO: Ensure the file exists before trying to read or write to it
+    async ensureFileExists() {
+        try {
+            await fs.access(this.filePath);
+        }
+        catch (error) {
+            if (error.code === "ENOENT") {
+                // Create the file with an empty array if it doesn't exist
+                await fs.writeFile(this.filePath, "[]", "utf8");
+            }
+            else {
+                throw error; // Other errors should be handled properly
+            }
+        }
+    }
     async read() {
+        // TODO: Ensure the file exists before reading
+        await this.ensureFileExists();
         const data = await fs.readFile(this.filePath, "utf8");
         return JSON.parse(data);
     }
