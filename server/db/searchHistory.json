@@ -1,1 +1,14 @@
-[]
+[
+  {
+    "id": "fb366d7c-5c4e-4aac-b10f-d30862e9bdc7",
+    "name": "Irvine"
+  },
+  {
+    "id": "f86dfdcf-d889-4226-83a0-6e7db6bd585e",
+    "name": "San Diego"
+  },
+  {
+    "id": "f6fd4d08-5516-4993-970a-95873977dffd",
+    "name": "Tehran"
+  }
+]
