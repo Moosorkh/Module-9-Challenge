@@ -3,6 +3,9 @@
   "compilerOptions": {
     "useDefineForClassFields": true,
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "types": ["node", "express", "uuid", "dayjs"],
+    "esModuleInterop": true,
+    "moduleResolution": "node",
     "skipLibCheck": true,
 
     /* Bundler mode */

@@ -3,6 +3,11 @@
   "compilerOptions": {
     /* Modules */
     "rootDir": "src" /* Specify the root folder within your source files. */,
+        "types": ["node", "express", "uuid", "dayjs"],
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "moduleResolution": "node",
+    "skipLibCheck": true,
 
     /* Emit */
     "outDir": "dist" /* Specify an output folder for all emitted files. */
