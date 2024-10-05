@@ -1,7 +1,6 @@
 import fs from "fs/promises";
 import { v4 as uuidv4 } from "uuid";
 
-// TODO: Define a City class with name and id properties
 class City {
   id: string;
   name: string;
@@ -12,17 +11,19 @@ class City {
   }
 }
 
-
 class HistoryService {
   private filePath = "db/searchHistory.json";
 
   // TODO: Ensure the file exists before trying to read or write to it
   private async ensureFileExists(): Promise<void> {
     try {
+      console.log(`Ensuring file exists at path: ${this.filePath}`);
       await fs.access(this.filePath);
     } catch (error: any) {
       if (error.code === "ENOENT") {
-        // Create the file with an empty array if it doesn't exist
+        console.log(
+          `File does not exist. Creating file at path: ${this.filePath}`
+        );
         await fs.writeFile(this.filePath, "[]", "utf8");
       } else {
         throw error; // Other errors should be handled properly
@@ -31,43 +32,53 @@ class HistoryService {
   }
 
   private async read(): Promise<City[]> {
-    // TODO: Ensure the file exists before reading
     await this.ensureFileExists();
+    console.log(`Reading file at path: ${this.filePath}`);
     const data = await fs.readFile(this.filePath, "utf8");
-    return JSON.parse(data) as City[];
+
+    // Handle potential parsing errors
+    let cities: City[] = [];
+    try {
+      cities = JSON.parse(data);
+    } catch (error) {
+      console.log(`Error parsing JSON data: ${error}`);
+      cities = [];
+    }
+    return cities;
   }
 
-  // TODO: Define a write method that writes the updated cities array to the searchHistory.json file
   private async write(cities: City[]): Promise<void> {
     await fs.writeFile(this.filePath, JSON.stringify(cities, null, 2), "utf-8");
   }
 
-  // TODO: Define a getCities method that reads the cities from the searchHistory.json file and returns them as an array of City objects
   async getCities(): Promise<City[]> {
     return await this.read();
   }
 
-  // TODO: Define an addCity method that adds a city to the searchHistory.json file
-  async addCity(city: string) {
-    if (!city) {
+  async addCity(cityName: string): Promise<City | null> {
+    if (!cityName) {
       throw new Error("City name is required");
     }
-    const newCity: City = { name: city, id: uuidv4() };
-    return await this.getCities()
-      .then((cities) => {
-        if (cities.find((index) => index.name === city)) {
-          return cities;
-        }
-        return [...cities, newCity];
-      })
-      .then((updatedCities) => this.write(updatedCities))
-      .then(() => newCity);
+
+    const newCity = new City(cityName);
+    const cities = await this.read();
+
+    // Check if the city already exists
+    if (cities.find((city) => city.name === cityName)) {
+      console.log(`City "${cityName}" already exists`);
+      return null;
+    }
+
+    cities.push(newCity);
+    await this.write(cities);
+
+    return newCity;
   }
 
   // * BONUS TODO: Define a removeCity method that removes a city from the searchHistory.json file
   async removeCity(id: string): Promise<void> {
     let cities = await this.read();
-    cities = cities.filter((cityName) => cityName.id !== id);
+    cities = cities.filter((city) => city.id !== id);
     await this.write(cities);
   }
 }
