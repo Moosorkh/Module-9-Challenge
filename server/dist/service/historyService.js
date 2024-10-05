@@ -41,10 +41,20 @@ class HistoryService {
         return await this.read();
     }
     // TODO: Define an addCity method that adds a city to the searchHistory.json file
-    async addCity(cityName) {
-        const cities = await this.read();
-        cities.push(new City(cityName));
-        await this.write(cities);
+    async addCity(city) {
+        if (!city) {
+            throw new Error("City name is required");
+        }
+        const newCity = { name: city, id: uuidv4() };
+        return await this.getCities()
+            .then((cities) => {
+            if (cities.find((index) => index.name === city)) {
+                return cities;
+            }
+            return [...cities, newCity];
+        })
+            .then((updatedCities) => this.write(updatedCities))
+            .then(() => newCity);
     }
     // * BONUS TODO: Define a removeCity method that removes a city from the searchHistory.json file
     async removeCity(id) {
